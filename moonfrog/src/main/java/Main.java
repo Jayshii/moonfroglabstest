@@ -1,13 +1,15 @@
 import Util.FetchData;
+import com.google.api.services.sheets.v4.model.ValueRange;
 
-import java.time.temporal.ValueRange;
 import java.util.ArrayList;
-import java.util.*;
-import java.io.*;
 import java.lang.*;
+import java.util.List;
 
-class Node{
-    int data; Node left; Node right;
+class Node {
+    int data;
+    Node left;
+    Node right;
+
     public Node(int data) {
         this.data = data;
         left = null;
@@ -23,45 +25,45 @@ public class Main {
     {
         root = null;
     }
+
     public void addNode(int value) { // public method is called by the object and this public method calls the private method in which the root is also passed.
         root = add(root, value);
     }
+
     private Node add(Node node, int value) {
-        if(node == null) {
+        if (node == null) {
             node = new Node(value);
-        }
-        else if(value == node.data) {
+        } else if (value == node.data) {
             node.data = value;
-        }
-        else if(value < node.data) {
+        } else if (value < node.data) {
             node.left = add(node.left, value);
-        }
-        else {
+        } else {
             node.right = add(node.right, value);
         }
         return node;
     }
-    public static void main(String args[]) {
+
+    public static void main(String[] args) throws Exception {
         FetchData fetchData = new FetchData();
-        ArrayList<ValueRange> allRows = fetchData.getData();
+        List<ValueRange> allRows = fetchData.getData();
         Main obj = new Main();
-        for (int i=0;i<allRows.size();i++) {
-            obj.add(allRows.get(i).getValues().get(0));
+        for (int i = 0; i < allRows.size(); i++) {
+            obj.add(Main.root, (Integer) allRows.get(i).getValues().get(0).get(0));
         }
-        printInorder(Main.root);
+        printReverseInorder(Main.root);
     }
-    static void printInorder(Node node)
-    {
+
+    private static void printReverseInorder(Node node) {
         if (node == null)
             return;
 
         /* first recur on left child */
-        printInorder(node.right);
+        printReverseInorder(node.right);
 
         /* then print the data of node */
         System.out.print(node.data + " ");
 
         /* now recur on right child */
-        printInorder(node.left);
+        printReverseInorder(node.left);
     }
 }
